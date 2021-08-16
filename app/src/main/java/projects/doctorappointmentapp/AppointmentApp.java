@@ -2,20 +2,18 @@ package projects.doctorappointmentapp;
 
 import android.app.Application;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-
-import java.io.FileInputStream;
-
 public class AppointmentApp  extends Application {
     private static AppointmentApp appInstance=null;
     private DoctorsDB doctorsDB;
+    // todo - change to constants to Strings (references and such)
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         appInstance = this;
+        doctorsDB = new DoctorsDB();
+
 
 //        FileInputStream serviceAccount = new FileInputStream("path/to/serviceAccountKey.json");
 //        FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();

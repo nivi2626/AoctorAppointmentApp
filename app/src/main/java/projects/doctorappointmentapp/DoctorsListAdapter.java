@@ -10,11 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
     private DoctorsDB doctorsDB;
 
+    DoctorsListAdapter(){
+        super();
+        if (doctorsDB == null) {
+            doctorsDB = AppointmentApp.getAppInstance().getDoctorsDB();
+        }
+    }
+
     @NonNull
     @Override
     public DoctorHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.doctor_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.doctor_item, parent, false);
         return new DoctorHolder(view);
     }
 

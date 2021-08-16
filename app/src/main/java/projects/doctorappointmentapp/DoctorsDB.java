@@ -1,10 +1,14 @@
 package projects.doctorappointmentapp;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class DoctorsDB {
-    private List<Doctor> allDoctors;
+    private ArrayList<Doctor> allDoctors;
+
+    public DoctorsDB() {
+        this.allDoctors = new ArrayList<>();
+    }
 
     Doctor getDoctor(int position) {
         return allDoctors.get(position);

@@ -36,7 +36,7 @@ public class RegisterDoctor extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firebaseDB = FirebaseDatabase.getInstance();
 
-                // find views
+        // find views
         name_edit = findViewById(R.id.name_edit);
         email_edit = findViewById(R.id.edit_email);
         password_edit = findViewById(R.id.password_edit);

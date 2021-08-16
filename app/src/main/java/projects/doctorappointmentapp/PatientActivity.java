@@ -3,8 +3,10 @@ package projects.doctorappointmentapp;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -22,14 +24,14 @@ public class PatientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.patient_activity);
 
         if (doctorsDB == null) {
             doctorsDB = AppointmentApp.getAppInstance().getDoctorsDB();
         }
 
         // find all the views
-        Switch filter = findViewById(R.id.filter);
+        Switch filter = (Switch) findViewById(R.id.filter);
         RecyclerView recView = findViewById(R.id.recycler);
 
         // manage Recycler View
@@ -37,12 +39,23 @@ public class PatientActivity extends AppCompatActivity {
         this.adapter = new DoctorsListAdapter();
         recView.setAdapter(adapter);
 
+        // set initial UI:
+//        filter.setChecked(false);
 
-        // addTask listener
-        filter.setOnClickListener(v ->
-        {
-           //todo - filter to show only available docs
-        });
+
+//        // addTask listener
+//        filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+//        {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    Toast.makeText(PatientActivity.this, "22222", Toast.LENGTH_LONG).show();
+//                }
+//                else {
+//                    Toast.makeText(PatientActivity.this, "1111",Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 
 }

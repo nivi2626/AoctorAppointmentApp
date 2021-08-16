@@ -3,6 +3,7 @@
     package="projects.doctorappointmentapp">
 
     <application
+        android:name=".AppointmentApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,6 +23,14 @@
 
         <activity
             android:name=".RegisterDoctor">
+        </activity>
+
+        <activity
+            android:name=".PatientActivity">
+        </activity>
+
+        <activity
+            android:name=".RegisterPatient">
         </activity>
 
     </application>
