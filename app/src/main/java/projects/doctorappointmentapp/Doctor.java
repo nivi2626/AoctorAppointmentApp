@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Doctor {
-    String name = "";
-    String location = "";
-    String email = "";
-    String currentPatient;
-    List<String> waiting_list;
+    public String name = "";
+    public String location = "";
+    public String email = "";
+    public String currentPatient;
+    public List<String> waiting_list;
 
     Doctor(String name, String email, String location){
         this.name = name;

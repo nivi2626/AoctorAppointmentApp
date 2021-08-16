@@ -2,9 +2,11 @@ package projects.doctorappointmentapp;
 
 import android.app.Application;
 
+import com.google.firebase.FirebaseApp;
+
 public class AppointmentApp  extends Application {
     private static AppointmentApp appInstance=null;
-    private DoctorsDB doctorsDB;
+    private static DoctorsDB doctorsDB;
     // todo - change to constants to Strings (references and such)
 
 
@@ -13,6 +15,7 @@ public class AppointmentApp  extends Application {
         super.onCreate();
         appInstance = this;
         doctorsDB = new DoctorsDB();
+        FirebaseApp.initializeApp(this);
 
 
 //        FileInputStream serviceAccount = new FileInputStream("path/to/serviceAccountKey.json");
@@ -27,7 +30,7 @@ public class AppointmentApp  extends Application {
         return appInstance;
     }
 
-    public DoctorsDB getDoctorsDB() {
+    public static DoctorsDB getDoctorsDB() {
         return doctorsDB;
     }
 }

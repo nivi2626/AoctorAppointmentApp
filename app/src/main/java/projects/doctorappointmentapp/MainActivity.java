@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
         RadioButton patient_radio = findViewById(R.id.patient_radio);
 
 
+//        // todo- delete
+//        Intent nextIntent = new Intent(MainActivity.this, PatientActivity.class);
+//        startActivity(nextIntent);
+
+
         // logIn listener
         logInButton.setOnClickListener(v->
         {
@@ -62,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else {
                                     Intent nextIntent = new Intent(MainActivity.this, PatientActivity.class);
-                                    startActivity(nextIntent);                                }
+                                    startActivity(nextIntent);
+                                }
                             }
                             else {
                                 Toast.makeText(MainActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
@@ -82,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Must choose user type - doctor or patient", Toast.LENGTH_LONG).show();
             }
             else if (doctorChecked) {
-                    Intent nextIntent = new Intent(this, RegisterDoctor.class);
-                    startActivity(nextIntent);
+                    Intent DoctorIntent = new Intent(this, RegisterDoctor.class);
+                    startActivity(DoctorIntent);
                 }
             else {
-                Intent nextIntent = new Intent(this, RegisterPatient.class);
-                startActivity(nextIntent);
+                Intent PatientIntent = new Intent(this, RegisterPatient.class);
+                startActivity(PatientIntent);
             }
 
         });
