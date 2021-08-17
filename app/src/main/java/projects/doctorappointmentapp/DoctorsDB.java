@@ -20,8 +20,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * doctors DB
+ */
 public class DoctorsDB {
     private ArrayList<Doctor> allDoctors;
+    private ArrayList<Doctor> availableDoctors;
     FirebaseFirestore fireStore;
 
 
@@ -31,10 +35,23 @@ public class DoctorsDB {
         initializeAllDoctors();
     }
 
+    /**
+     * return doctor according to given position
+     */
     Doctor getDoctorByPosition(int position) {
         return allDoctors.get(position);
     }
 
+    /**
+     * return available doctor according to given position
+     */
+    Doctor getAvailableDoctorByPosition(int position) {
+        return availableDoctors.get(position);
+    }
+
+    /**
+     * returns Doctor object according to uid
+     */
     Doctor getDoctorByUid(String uid) {
         for (Doctor doc : allDoctors) {
             if (doc.uid.equals(uid)) {
@@ -44,10 +61,23 @@ public class DoctorsDB {
         return null;
     }
 
-    int getCount() {
+    /**
+     * returns number of doctors
+     */
+    int getAllCount() {
         return allDoctors.size();
     }
 
+    /**
+     * returns number of available doctors
+     */
+    int getFilteredCount() {
+        return availableDoctors.size();
+    }
+
+    /**
+     * initialize the parameter allDoctors - a list of all doctors in the FireStore collection
+     */
     private void initializeAllDoctors() {
         fireStore.collection(AppointmentApp.doctorsCollection).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -63,9 +93,26 @@ public class DoctorsDB {
                 });
     }
 
-    public void addDoctor(String uid, Doctor newDoc) {
+
+    /**
+     * adds new doctor
+     */
+    public void addDoctor(Doctor newDoc) {
         allDoctors.add(newDoc);
     }
+
+    /**
+     * filters only the available doctors and saves the list to availableDoctors parameter
+     */
+    public void filter() {
+        availableDoctors = new ArrayList<>();
+        for (Doctor doc : allDoctors) {
+            if (doc.currentPatient == null) {
+                availableDoctors.add(doc);
+            }
+        }
+    }
+
 
 
 }

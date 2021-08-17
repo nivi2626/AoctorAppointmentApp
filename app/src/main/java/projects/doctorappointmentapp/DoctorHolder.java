@@ -7,6 +7,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/***
+ * Doctor row in the recycle view
+ */
 public class DoctorHolder extends RecyclerView.ViewHolder{
     View view;
     Button appointmentButton;

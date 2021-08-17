@@ -21,6 +21,7 @@ public class Patient {
     }
 
     Patient(){
+        this.uid = "";
         this.name = "";
         this.email = "";
         this.age = 0;

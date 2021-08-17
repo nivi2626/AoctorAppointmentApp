@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
@@ -22,64 +24,60 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * defines the patients' screen - list of all doctors and option to filter only available ones
+ */
 public class PatientActivity extends AppCompatActivity {
     private DoctorsListAdapter adapter = null;
     private DoctorsDB doctorsDB = null;
-    private static Patient patient;
+    private PatientsDB PatentsDB = null;
+    FirebaseFirestore fireStore; // ?
+    Patient patient;
+    RecyclerView recView;
+    Switch filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_activity);
+        fireStore = FirebaseFirestore.getInstance(); // ?
 
+        // get Data bases
         if (doctorsDB == null) {
             doctorsDB = AppointmentApp.getAppInstance().getDoctorsDB();
         }
+        if (PatentsDB == null) {
+            PatentsDB = AppointmentApp.getAppInstance().getPatentsDB();
+        }
 
         // find all the views
-        Switch filter = (Switch) findViewById(R.id.filter);
-        RecyclerView recView = findViewById(R.id.recycler);
+        filter = (Switch) findViewById(R.id.filter);
+        recView = findViewById(R.id.recycler);
 
         // set initial UI:
         filter.setChecked(false);
 
-        // manage Recycler View
-        recView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        this.adapter = new DoctorsListAdapter();
+        // find patient
+        String uid = getIntent().getStringExtra("uid");
+        patient = PatientsDB.getByUid(uid);
+
+        // recycleView
+        recView.setLayoutManager(new LinearLayoutManager(PatientActivity.this, RecyclerView.VERTICAL, false));
+        adapter = new DoctorsListAdapter(patient);
         recView.setAdapter(adapter);
 
-        // get patient's object
-        Intent intent = getIntent();
-        String uid = intent.getStringExtra("uid");
-        setPatient(uid);
 
         // filter listener
-        filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
+        filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(PatientActivity.this, "22222", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(PatientActivity.this, "1111",Toast.LENGTH_LONG).show();
+                    adapter.showFiltered();
+                } else {
+                    adapter.showAll();
                 }
             }
+
         });
-    }
-
-    private void setPatient(String uid) {
-        FirebaseFirestore.getInstance().collection(AppointmentApp.patientsCollection).document(uid)
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        patient = documentSnapshot.toObject(Patient.class);
-                        adapter.patient = patient;
-                    }
-                });
-    }
-
-    public static Patient getPatient() {
-        return patient;
     }
 }

@@ -91,7 +91,7 @@ public class RegisterDoctor extends AppCompatActivity {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         Doctor newDoc = new Doctor(uid, name, email, location);
-                        AppointmentApp.getDoctorsDB().addDoctor(uid, newDoc);
+                        AppointmentApp.getDoctorsDB().addDoctor(newDoc);
                         uploadToFireStore(uid, newDoc);
                         progressBar.setVisibility(View.GONE);
                         Intent nextIntent = new Intent(RegisterDoctor.this, DoctorActivity.class);

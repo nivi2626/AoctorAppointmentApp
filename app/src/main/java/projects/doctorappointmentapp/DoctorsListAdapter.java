@@ -15,54 +15,91 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+/**
+ * Adapter for doctors recycleView
+ */
 public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
     private DoctorsDB doctorsDB;
     public Patient patient;
     private Context context;
+    Boolean showFiltered = false;
 
-    DoctorsListAdapter(){
+    /**
+     * constructor - initialize the doctorsDB and the patient
+     */
+    DoctorsListAdapter(Patient givenPatient){
         super();
         if (doctorsDB == null) {
-            doctorsDB = AppointmentApp.getAppInstance().getDoctorsDB();
+            doctorsDB = AppointmentApp.getDoctorsDB();
+        }
+
+        if (this.patient == null) {
+            this.patient = givenPatient;
         }
     }
+
 
     @NonNull
     @Override
     public DoctorHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.doctor_item, parent, false);
         return new DoctorHolder(view);
-
     }
 
+    /**
+     * contains:
+     *  - schedule appointment listener
+     *  - cancel appointment listener
+     *  - waiting list popUp listener
+     */
     @Override
     public void onBindViewHolder(@NonNull DoctorHolder holder, int position) {
-        Doctor doctor = doctorsDB.getDoctorByPosition(position);
         this.context = holder.doctor_text.getContext();
+
+        // find the doctor to show
+        Doctor doctor;
+        if (showFiltered) {
+            doctor = doctorsDB.getAvailableDoctorByPosition(position);
+        }
+        else {
+            doctor = doctorsDB.getDoctorByPosition(position);
+        }
 
         // set UI
         holder.doctor_name.setText(doctor.name);
         holder.doctor_text.setText(doctor.location);
-        holder.appointmentButton.setAlpha(1f);
-        holder.cancelButton.setVisibility(View.INVISIBLE);
+        if (checkIfScheduled(doctor)) {
+            holder.appointmentButton.setClickable(false);
+            holder.appointmentButton.setAlpha(0.5f);
+            holder.cancelButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.appointmentButton.setAlpha(1f);
+            holder.appointmentButton.setClickable(true);
+            holder.cancelButton.setVisibility(View.INVISIBLE);
+        }
 
+        // schedule appointment listener
         holder.appointmentButton.setOnClickListener(v->
         {
             if (doctor.currentPatient == null) {
                 doctor.setCurrentPatient(patient);
-
             }
             else {
                 doctor.addToWaitingList(patient);
             }
+            patient.appointments.add(doctor);
             holder.appointmentButton.setAlpha(0.5f);
             holder.cancelButton.setVisibility(View.VISIBLE);
         });
 
+        // cancel appointment listener
         holder.cancelButton.setOnClickListener(v->
         {
             if (doctor.currentPatient != patient) {
-                doctor.waiting_list.remove(patient);
+                doctor.removeFromWaitingList(patient);
+                patient.appointments.remove(doctor);
             }
             holder.appointmentButton.setAlpha(1f);
             holder.cancelButton.setVisibility(View.INVISIBLE);
@@ -91,10 +128,48 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
             popupWindow.showAsDropDown(popupView, 0, 0);        });
     }
 
-
+    /**
+     * @return total number of doctors to show
+     */
     @Override
     public int getItemCount() {
-        return doctorsDB.getCount();
+        if (showFiltered) {
+            return doctorsDB.getFilteredCount();
+        }
+        return doctorsDB.getAllCount();
+    }
+
+    /**
+     * shows only available doctors
+     */
+    public void showFiltered() {
+        showFiltered = true;
+        doctorsDB.filter();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * shows all doctors (not only available)
+     */
+    public void showAll() {
+        showFiltered = false;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * @param doctor - check for appointments with this doctor
+     * @return true if patient already scheduled an appointment with this doctor, false else
+     */
+    private Boolean checkIfScheduled(Doctor doctor){
+        if (this.patient == null) {
+            return false;
+        }
+        for (Doctor doc:patient.appointments){
+            if (doc == doctor) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
