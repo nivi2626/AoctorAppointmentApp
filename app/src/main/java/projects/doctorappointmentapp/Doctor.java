@@ -28,6 +28,16 @@ public class Doctor {
         this.waiting_list = new ArrayList<Patient>();
     }
 
+    public String getWaitingList() {
+        StringBuilder result = new StringBuilder();
+        for (Patient p:this.waiting_list) {
+            if (!result.toString().equals("")) {
+                result.append("\n");
+            }
+            result.append(p.name);
+        }
+        return String.valueOf(result);
+    }
 
 
 

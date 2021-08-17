@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraintLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".PatientActivity">
+
+    <TextView
+        android:id="@+id/waiting_list_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="waiting list for: "
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dr_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dr ?"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:textStyle="italic"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toRightOf="@+id/waiting_list_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/waiting_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="name\n name\n name\n"
+        android:layout_marginTop="20dp"
+        android:textStyle="italic"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@+id/waiting_list_text"
+        app:layout_constraintTop_toBottomOf="@id/waiting_list_text" />
+
+
+
+    <!-- close -->
+    <Button
+        android:id="@+id/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#446DAC"
+        android:text="close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+         />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

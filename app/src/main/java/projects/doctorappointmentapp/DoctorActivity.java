@@ -33,18 +33,7 @@ public class DoctorActivity extends AppCompatActivity {
         else {
             currentPatient.setText(doc.currentPatient.name);
         }
-        next_patients_names.setText(parseWaitingList(doc));
-    }
-
-    private String parseWaitingList(Doctor doc){
-        StringBuilder result = new StringBuilder();
-        for (Patient p:doc.waiting_list) {
-            if (!result.toString().equals("")) {
-                result.append("\n");
-            }
-            result.append(p.name);
-        }
-        return String.valueOf(result);
+        next_patients_names.setText(doc.getWaitingList());
     }
 
 }

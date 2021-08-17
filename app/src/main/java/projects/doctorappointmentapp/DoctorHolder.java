@@ -11,6 +11,7 @@ public class DoctorHolder extends RecyclerView.ViewHolder{
     View view;
     Button appointmentButton;
     Button cancelButton;
+    Button waitingListButton;
     TextView doctor_name;
     TextView doctor_text;
 
@@ -19,8 +20,9 @@ public class DoctorHolder extends RecyclerView.ViewHolder{
         super(itemView);
         // find views
         this.view = itemView;
-        this.appointmentButton = itemView.findViewById(R.id.appointmentButton);
-        this.cancelButton = itemView.findViewById(R.id.cancelButton);
+        this.appointmentButton = itemView.findViewById(R.id.appointment_button);
+        this.cancelButton = itemView.findViewById(R.id.cancel_button);
+        this.waitingListButton = itemView.findViewById(R.id.waiting_list_button);
         this.doctor_name = itemView.findViewById(R.id.doctor_name);
         this.doctor_text = itemView.findViewById(R.id.doctor_text);
 

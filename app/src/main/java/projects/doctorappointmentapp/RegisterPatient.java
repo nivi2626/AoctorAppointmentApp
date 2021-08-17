@@ -98,12 +98,11 @@ public class RegisterPatient extends AppCompatActivity {
         String password = this.password_edit.getText().toString();
 
         progressBar.setVisibility(View.VISIBLE);
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(RegisterPatient.this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Patient newPatient = new Patient(uid, name, email, age);
                         uploadToFireStore(uid, newPatient);
                         progressBar.setVisibility(View.GONE);

@@ -37,12 +37,6 @@ public class MainActivity extends AppCompatActivity {
         RadioButton doctor_radio = findViewById(R.id.doctor_radio);
         RadioButton patient_radio = findViewById(R.id.patient_radio);
 
-
-//        // todo- delete
-//        Intent nextIntent = new Intent(MainActivity.this, PatientActivity.class);
-//        startActivity(nextIntent);
-
-
         // logIn listener
         logInButton.setOnClickListener(v->
         {
@@ -54,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
             }
             String user_email = editEmail.getText().toString().trim();
             String user_password = editPassword.getText().toString().trim();
+            if (user_email.length() == 0 || user_password.length() == 0) {
+                Toast.makeText(MainActivity.this, "must enter Email and password",Toast.LENGTH_LONG).show();
+                return;
+            }
             firebaseAuth.signInWithEmailAndPassword(user_email, user_password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override

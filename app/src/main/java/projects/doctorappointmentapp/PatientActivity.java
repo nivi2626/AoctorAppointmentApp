@@ -46,42 +46,40 @@ public class PatientActivity extends AppCompatActivity {
         // get patient's object
         Intent intent = getIntent();
         String uid = intent.getStringExtra("uid");
-        getPatient(uid);
+        setPatient(uid);
 
         // manage Recycler View
         recView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        this.adapter = new DoctorsListAdapter(patient);
+        this.adapter = new DoctorsListAdapter();
         recView.setAdapter(adapter);
 
-
-
-//        // addTask listener
-//        filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-//        {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    Toast.makeText(PatientActivity.this, "22222", Toast.LENGTH_LONG).show();
-//                }
-//                else {
-//                    Toast.makeText(PatientActivity.this, "1111",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
-
-
+        // filter listener
+        filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(PatientActivity.this, "22222", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(PatientActivity.this, "1111",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
-    private void getPatient(String uid) {
+    private void setPatient(String uid) {
         FirebaseFirestore.getInstance().collection(AppointmentApp.patientsCollection).document(uid)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         patient = documentSnapshot.toObject(Patient.class);
+                        adapter.patient = patient;
                     }
                 });
     }
 
-
+    public static Patient getPatient() {
+        return patient;
+    }
 }
