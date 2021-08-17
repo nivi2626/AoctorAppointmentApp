@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDB;
     private FirebaseAuth firebaseAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firebaseDB = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-
 
         // find views
         Button registerButton = findViewById(R.id.register_button);
@@ -52,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
             boolean patientChecked = ((RadioButton) patient_radio).isChecked();
             if (!doctorChecked & !patientChecked) {
                 Toast.makeText(this, "Must choose user type - doctor or patient", Toast.LENGTH_LONG).show();
+                return;
             }
-
             String user_email = editEmail.getText().toString().trim();
             String user_password = editPassword.getText().toString().trim();
             firebaseAuth.signInWithEmailAndPassword(user_email, user_password)
@@ -61,12 +59,16 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                if (doctor_radio.isChecked()) {
+                                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                // todo - check if doctor/patient according to type filed (create user class)
+                                if (doctor_radio.isChecked() & isDoctor(uid)) {
                                     Intent nextIntent = new Intent(MainActivity.this, DoctorActivity.class);
+                                    nextIntent.putExtra("uid", uid);
                                     startActivity(nextIntent);
                                 }
                                 else {
                                     Intent nextIntent = new Intent(MainActivity.this, PatientActivity.class);
+                                    nextIntent.putExtra("uid", uid);
                                     startActivity(nextIntent);
                                 }
                             }
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     });
 
         });
-
 
         // register listener
         registerButton.setOnClickListener(v->
@@ -97,5 +98,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private boolean isDoctor(String uid) {
+        if (AppointmentApp.getDoctorsDB().getDoctorByUid(uid) != null) {
+            return true;
+        };
+        return false;
     }
 }

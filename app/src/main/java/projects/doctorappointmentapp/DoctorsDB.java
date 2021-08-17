@@ -10,9 +10,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import java.util.List;
 public class DoctorsDB {
     private ArrayList<Doctor> allDoctors;
     FirebaseFirestore fireStore;
-    final String doctorsCollection = "doctors";
 
 
     public DoctorsDB() {
@@ -34,9 +35,9 @@ public class DoctorsDB {
         return allDoctors.get(position);
     }
 
-    Doctor getDoctorByEmail(String Email) {
-        for (Doctor doc: allDoctors) {
-            if (doc.email.equals(Email)) {
+    Doctor getDoctorByUid(String uid) {
+        for (Doctor doc : allDoctors) {
+            if (doc.uid.equals(uid)) {
                 return doc;
             }
         }
@@ -48,13 +49,14 @@ public class DoctorsDB {
     }
 
     private void initializeAllDoctors() {
-        fireStore.collection(doctorsCollection).get()
+        fireStore.collection(AppointmentApp.doctorsCollection).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult() != null) {
-                                allDoctors = (ArrayList<Doctor>) task.getResult().toObjects(Doctor.class);
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Doctor doc = document.toObject(Doctor.class);
+                                allDoctors.add(doc);
                             }
                         }
                     }
@@ -63,24 +65,6 @@ public class DoctorsDB {
 
     public void addDoctor(String uid, Doctor newDoc) {
         allDoctors.add(newDoc);
-        uploadToFireStore(uid, newDoc);
-    }
-
-
-    private void uploadToFireStore(String uid, Doctor newDoc) {
-        fireStore.collection("doctors").document(uid).set(newDoc)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(RegisterDoctor.this, "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
     }
 
 

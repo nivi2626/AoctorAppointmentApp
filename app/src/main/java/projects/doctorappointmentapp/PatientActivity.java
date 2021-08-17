@@ -1,6 +1,7 @@
 package projects.doctorappointmentapp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -13,13 +14,18 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
 public class PatientActivity extends AppCompatActivity {
     private DoctorsListAdapter adapter = null;
     private DoctorsDB doctorsDB = null;
+    private static Patient patient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +40,19 @@ public class PatientActivity extends AppCompatActivity {
         Switch filter = (Switch) findViewById(R.id.filter);
         RecyclerView recView = findViewById(R.id.recycler);
 
+        // set initial UI:
+        filter.setChecked(false);
+
+        // get patient's object
+        Intent intent = getIntent();
+        String uid = intent.getStringExtra("uid");
+        getPatient(uid);
+
         // manage Recycler View
         recView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        this.adapter = new DoctorsListAdapter();
+        this.adapter = new DoctorsListAdapter(patient);
         recView.setAdapter(adapter);
 
-        // set initial UI:
-//        filter.setChecked(false);
 
 
 //        // addTask listener
@@ -56,6 +68,20 @@ public class PatientActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
+
+
+
     }
+
+    private void getPatient(String uid) {
+        FirebaseFirestore.getInstance().collection(AppointmentApp.patientsCollection).document(uid)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        patient = documentSnapshot.toObject(Patient.class);
+                    }
+                });
+    }
+
 
 }

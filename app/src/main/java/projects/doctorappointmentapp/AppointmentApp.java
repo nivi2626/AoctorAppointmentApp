@@ -7,7 +7,8 @@ import com.google.firebase.FirebaseApp;
 public class AppointmentApp  extends Application {
     private static AppointmentApp appInstance=null;
     private static DoctorsDB doctorsDB;
-    // todo - change to constants to Strings (references and such)
+    final static String doctorsCollection = "doctors";
+    final static String patientsCollection = "patients";
 
 
     @Override

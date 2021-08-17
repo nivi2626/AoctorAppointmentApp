@@ -7,33 +7,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class RegisterDoctor extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    FirebaseFirestore fireStore;
     EditText name_edit;
     EditText email_edit;
     EditText location_edit;
     EditText password_edit;
     Button registerButton;
     ProgressBar progressBar;
-
-//    FirebaseFirestore fireStore;
 
 
     @Override
@@ -42,8 +37,7 @@ public class RegisterDoctor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_doctor);
         mAuth = FirebaseAuth.getInstance();
-//        fireStore = FirebaseFirestore.getInstance();
-
+        fireStore = FirebaseFirestore.getInstance();
 
         // find views
         name_edit = findViewById(R.id.name_edit);
@@ -85,7 +79,6 @@ public class RegisterDoctor extends AppCompatActivity {
     }
 
     private void registerDoctor() {
-
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
         String location = this.location_edit.getText().toString();
@@ -97,12 +90,12 @@ public class RegisterDoctor extends AppCompatActivity {
                 .addOnSuccessListener(RegisterDoctor.this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Doctor newDoc = new Doctor(name, email, location);
+                        Doctor newDoc = new Doctor(uid, name, email, location);
                         AppointmentApp.getDoctorsDB().addDoctor(uid, newDoc);
+                        uploadToFireStore(uid, newDoc);
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
                         Intent nextIntent = new Intent(RegisterDoctor.this, DoctorActivity.class);
-                        nextIntent.putExtra("email", email);
+                        nextIntent.putExtra("uid", uid);
                         startActivity(nextIntent);
                     }
                 })
@@ -111,6 +104,22 @@ public class RegisterDoctor extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(RegisterDoctor.this, "Registration failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void uploadToFireStore(String uid, Doctor newDoc) {
+        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(newDoc)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RegisterDoctor.this, "Error", Toast.LENGTH_LONG).show();
                     }
                 });
     }

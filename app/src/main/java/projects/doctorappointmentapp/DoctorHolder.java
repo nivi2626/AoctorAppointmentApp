@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DoctorHolder extends RecyclerView.ViewHolder{
     View view;
     Button appointmentButton;
+    Button cancelButton;
     TextView doctor_name;
     TextView doctor_text;
 
@@ -19,6 +20,7 @@ public class DoctorHolder extends RecyclerView.ViewHolder{
         // find views
         this.view = itemView;
         this.appointmentButton = itemView.findViewById(R.id.appointmentButton);
+        this.cancelButton = itemView.findViewById(R.id.cancelButton);
         this.doctor_name = itemView.findViewById(R.id.doctor_name);
         this.doctor_text = itemView.findViewById(R.id.doctor_text);
 

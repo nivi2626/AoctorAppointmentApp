@@ -4,26 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Doctor {
+    public String uid;
     public String name = "";
     public String location = "";
     public String email = "";
-    public String currentPatient;
-    public List<String> waiting_list;
+    public Patient currentPatient;
+    public List<Patient> waiting_list;
 
-    Doctor(String name, String email, String location){
+    Doctor(String uid, String name, String email, String location){
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.location = location;
-        this.currentPatient = "";
-        this.waiting_list = new ArrayList<String>();
+        this.currentPatient = null;
+        this.waiting_list = new ArrayList<Patient>();
     }
 
     Doctor(){
-        this.name = "name";
+        this.name = "Dr.?";
         this.email = "";
         this.location = "location";
-        this.currentPatient = "";
-        this.waiting_list = new ArrayList<String>();
+        this.currentPatient = null;
+        this.waiting_list = new ArrayList<Patient>();
     }
 
 
