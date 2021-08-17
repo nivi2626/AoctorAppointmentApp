@@ -49,10 +49,11 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
         holder.appointmentButton.setOnClickListener(v->
         {
             if (doctor.currentPatient == null) {
-                doctor.currentPatient = patient;
+                doctor.setCurrentPatient(patient);
+
             }
             else {
-                doctor.waiting_list.add(patient);
+                doctor.addToWaitingList(patient);
             }
             holder.appointmentButton.setAlpha(0.5f);
             holder.cancelButton.setVisibility(View.VISIBLE);
@@ -89,7 +90,6 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
             });
             popupWindow.showAsDropDown(popupView, 0, 0);        });
     }
-
 
 
     @Override

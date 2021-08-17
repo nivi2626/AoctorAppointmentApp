@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    FirebaseDatabase firebaseDB;
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        firebaseDB = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
 
         // find views

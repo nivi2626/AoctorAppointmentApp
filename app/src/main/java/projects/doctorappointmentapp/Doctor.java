@@ -1,15 +1,19 @@
 package projects.doctorappointmentapp;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Doctor {
     public String uid;
-    public String name = "";
-    public String location = "";
-    public String email = "";
+    public String name;
+    public String location;
+    public String email;
     public Patient currentPatient;
     public List<Patient> waiting_list;
+    FirebaseFirestore  fireStore= FirebaseFirestore.getInstance();;
+
 
     Doctor(String uid, String name, String email, String location){
         this.uid = uid;
@@ -38,6 +42,21 @@ public class Doctor {
         }
         return String.valueOf(result);
     }
+
+    public void addToWaitingList(Patient patient){
+        waiting_list.add(patient);
+        updateFireStore();
+    }
+
+    public void setCurrentPatient(Patient patient) {
+        currentPatient = patient;
+        updateFireStore();
+    }
+
+    private void updateFireStore(){
+        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(this);
+    }
+
 
 
 

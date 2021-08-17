@@ -43,15 +43,15 @@ public class PatientActivity extends AppCompatActivity {
         // set initial UI:
         filter.setChecked(false);
 
-        // get patient's object
-        Intent intent = getIntent();
-        String uid = intent.getStringExtra("uid");
-        setPatient(uid);
-
         // manage Recycler View
         recView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         this.adapter = new DoctorsListAdapter();
         recView.setAdapter(adapter);
+
+        // get patient's object
+        Intent intent = getIntent();
+        String uid = intent.getStringExtra("uid");
+        setPatient(uid);
 
         // filter listener
         filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
