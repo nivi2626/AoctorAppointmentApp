@@ -1,27 +1,19 @@
 package projects.doctorappointmentapp;
-
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/***
+/**
  * object to represent a doctor-user
  */
-public class Doctor {
-    public String uid;
-    public String name;
+public class Doctor extends User{
     public String location;
-    public String email;
-    public Patient currentPatient;
+    private Patient currentPatient;
     public List<Patient> waiting_list;
-    FirebaseFirestore  fireStore= FirebaseFirestore.getInstance();;
 
 
     Doctor(String uid, String name, String email, String location){
@@ -44,7 +36,7 @@ public class Doctor {
     /***
      * @return the doctor's waiting list in a format of string - each patient's name in a new line
      */
-    public String getWaitingList() {
+    public String getWaitingListParsed() {
         StringBuilder result = new StringBuilder();
         for (Patient p:this.waiting_list) {
             if (!result.toString().equals("")) {
@@ -61,7 +53,7 @@ public class Doctor {
      */
     public void addToWaitingList(Patient patient){
         waiting_list.add(patient);
-        updateFireStore();
+        updateFireStore(AppointmentApp.doctorsCollection, uid, this);
     }
 
     /***
@@ -70,7 +62,7 @@ public class Doctor {
      */
     public void removeFromWaitingList(Patient patient) {
         waiting_list.remove(patient);
-        updateFireStore();
+        updateFireStore(AppointmentApp.doctorsCollection, uid, this);
     }
 
     /***
@@ -79,14 +71,15 @@ public class Doctor {
      */
     public void setCurrentPatient(Patient patient) {
         currentPatient = patient;
-        updateFireStore();
+        if (currentPatient != null) {
+            updateFireStore(AppointmentApp.doctorsCollection, uid, this);
+        }
     }
 
-    /***
-     * updates the doctor in fireStore
+    /**
+     * returns current patient
      */
-    private void updateFireStore(){
-        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(this);
+    public Patient getCurrentPatient() {
+        return currentPatient;
     }
-
 }

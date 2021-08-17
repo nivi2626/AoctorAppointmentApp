@@ -1,17 +1,13 @@
 package projects.doctorappointmentapp;
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,7 +65,7 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
         // set UI
         holder.doctor_name.setText(doctor.name);
         holder.doctor_text.setText(doctor.location);
-        if (checkIfScheduled(doctor)) {
+        if (patient.checkIfScheduled(doctor)) {
             holder.appointmentButton.setClickable(false);
             holder.appointmentButton.setAlpha(0.5f);
             holder.cancelButton.setVisibility(View.VISIBLE);
@@ -83,25 +79,27 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
         // schedule appointment listener
         holder.appointmentButton.setOnClickListener(v->
         {
-            if (doctor.currentPatient == null) {
+            patient.addToAppointments(doctor);
+            if (doctor.getCurrentPatient() == null) {
                 doctor.setCurrentPatient(patient);
             }
             else {
                 doctor.addToWaitingList(patient);
             }
-            patient.appointments.add(doctor);
             holder.appointmentButton.setAlpha(0.5f);
+            holder.appointmentButton.setClickable(false);
             holder.cancelButton.setVisibility(View.VISIBLE);
         });
 
         // cancel appointment listener
         holder.cancelButton.setOnClickListener(v->
         {
-            if (doctor.currentPatient != patient) {
+            if (doctor.getCurrentPatient() != patient) {
+                patient.removeFromAppointments(doctor);
                 doctor.removeFromWaitingList(patient);
-                patient.appointments.remove(doctor);
             }
             holder.appointmentButton.setAlpha(1f);
+            holder.appointmentButton.setClickable(true);
             holder.cancelButton.setVisibility(View.INVISIBLE);
         });
 
@@ -117,14 +115,9 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
 
             //set UI
             dr_name.setText(doctor.name);
-            waiting_list.setText(doctor.getWaitingList());
+            waiting_list.setText(doctor.getWaitingListParsed());
 
-            close_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popupWindow.dismiss();
-                }
-            });
+            close_button.setOnClickListener(v1 -> popupWindow.dismiss());
             popupWindow.showAsDropDown(popupView, 0, 0);        });
     }
 
@@ -156,20 +149,6 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
         notifyDataSetChanged();
     }
 
-    /**
-     * @param doctor - check for appointments with this doctor
-     * @return true if patient already scheduled an appointment with this doctor, false else
-     */
-    private Boolean checkIfScheduled(Doctor doctor){
-        if (this.patient == null) {
-            return false;
-        }
-        for (Doctor doc:patient.appointments){
-            if (doc == doctor) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 }

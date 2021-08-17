@@ -47,7 +47,7 @@
         android:id="@+id/next_patients_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:text="Next up: "
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,4 +63,14 @@
         android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@id/next_patients_text"
         app:layout_constraintTop_toBottomOf="@+id/next_patients_text" />
+
+    <Button
+        android:id="@+id/button_done"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="next patient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,9 +14,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * sign-in and register screen
+ */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth firebaseAuth;
@@ -46,28 +47,33 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Must choose user type - doctor or patient", Toast.LENGTH_LONG).show();
                 return;
             }
+
             String user_email = editEmail.getText().toString().trim();
             String user_password = editPassword.getText().toString().trim();
             if (user_email.length() == 0 || user_password.length() == 0) {
-                Toast.makeText(MainActivity.this, "must enter Email and password",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Must enter Email and password", Toast.LENGTH_LONG).show();
                 return;
             }
+
             firebaseAuth.signInWithEmailAndPassword(user_email, user_password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                // todo - check if doctor/patient according to type filed (create user class)
-                                if (doctor_radio.isChecked() & isDoctor(uid)) {
+                                boolean isDoctor = isDoctor(uid);
+                                if (doctor_radio.isChecked() & isDoctor) {
                                     Intent nextIntent = new Intent(MainActivity.this, DoctorActivity.class);
                                     nextIntent.putExtra("uid", uid);
                                     startActivity(nextIntent);
                                 }
-                                else {
+                                else if (patient_radio.isChecked() & !isDoctor){
                                     Intent nextIntent = new Intent(MainActivity.this, PatientActivity.class);
                                     nextIntent.putExtra("uid", uid);
                                     startActivity(nextIntent);
+                                }
+                                else {
+                                    Toast.makeText(MainActivity.this, "user does not match type (doctor or patient)",Toast.LENGTH_LONG).show();
                                 }
                             }
                             else {
@@ -98,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * checks if the given uid belongs to a doctor-user
+     */
     private boolean isDoctor(String uid) {
         if (AppointmentApp.getDoctorsDB().getDoctorByUid(uid) != null) {
             return true;

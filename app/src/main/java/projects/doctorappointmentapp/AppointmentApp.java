@@ -4,7 +4,10 @@ import android.app.Application;
 
 import com.google.firebase.FirebaseApp;
 
-public class AppointmentApp  extends Application {
+/**
+ * main Application. initialize DB classes and fireBase
+ */
+public class AppointmentApp extends Application {
     private static AppointmentApp appInstance=null;
     private static DoctorsDB doctorsDB;
     private static PatientsDB patientsDB;
@@ -19,13 +22,6 @@ public class AppointmentApp  extends Application {
         doctorsDB = new DoctorsDB();
         patientsDB = new PatientsDB();
         FirebaseApp.initializeApp(this);
-
-
-//        FileInputStream serviceAccount = new FileInputStream("path/to/serviceAccountKey.json");
-//        FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
-//        FirebaseApp.initializeApp(options);
-
-
     }
 
     public static AppointmentApp getAppInstance()
@@ -37,7 +33,7 @@ public class AppointmentApp  extends Application {
         return doctorsDB;
     }
 
-    public PatientsDB getPatentsDB() {
+    public static PatientsDB getPatientsDB() {
         return patientsDB;
 
     }

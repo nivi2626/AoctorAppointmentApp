@@ -1,24 +1,13 @@
 package projects.doctorappointmentapp;
-
-import android.content.Intent;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * doctors DB
@@ -93,7 +82,6 @@ public class DoctorsDB {
                 });
     }
 
-
     /**
      * adds new doctor
      */
@@ -107,7 +95,7 @@ public class DoctorsDB {
     public void filter() {
         availableDoctors = new ArrayList<>();
         for (Doctor doc : allDoctors) {
-            if (doc.currentPatient == null) {
+            if (doc.getCurrentPatient() == null) {
                 availableDoctors.add(doc);
             }
         }

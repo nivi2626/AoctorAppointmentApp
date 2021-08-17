@@ -1,28 +1,14 @@
 package projects.doctorappointmentapp;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.List;
 
 /**
  * defines the patients' screen - list of all doctors and option to filter only available ones
@@ -31,7 +17,6 @@ public class PatientActivity extends AppCompatActivity {
     private DoctorsListAdapter adapter = null;
     private DoctorsDB doctorsDB = null;
     private PatientsDB PatentsDB = null;
-    FirebaseFirestore fireStore; // ?
     Patient patient;
     RecyclerView recView;
     Switch filter;
@@ -40,14 +25,13 @@ public class PatientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_activity);
-        fireStore = FirebaseFirestore.getInstance(); // ?
 
         // get Data bases
         if (doctorsDB == null) {
-            doctorsDB = AppointmentApp.getAppInstance().getDoctorsDB();
+            doctorsDB = AppointmentApp.getDoctorsDB();
         }
         if (PatentsDB == null) {
-            PatentsDB = AppointmentApp.getAppInstance().getPatentsDB();
+            PatentsDB = AppointmentApp.getPatientsDB();
         }
 
         // find all the views
@@ -73,11 +57,21 @@ public class PatientActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     adapter.showFiltered();
-                } else {
+                }
+                else {
                     adapter.showAll();
                 }
             }
-
         });
+    }
+
+
+    /**
+     * Override onBackPressed so that pushing back will lead to main activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(PatientActivity.this, MainActivity.class);
+        startActivity(backIntent);
     }
 }

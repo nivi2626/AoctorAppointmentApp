@@ -1,5 +1,6 @@
 package projects.doctorappointmentapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -19,7 +20,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
+/**
+ * Register doctor screen
+ */
 public class RegisterDoctor extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore fireStore;
@@ -59,6 +62,9 @@ public class RegisterDoctor extends AppCompatActivity {
         });
     }
 
+    /**
+     * checks if the values the user insert are valid
+     */
     private Boolean checkDetails() {
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
@@ -78,6 +84,9 @@ public class RegisterDoctor extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * saves doctor as user and saves the doctor-object to fireStore
+     */
     private void registerDoctor() {
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
@@ -92,7 +101,10 @@ public class RegisterDoctor extends AppCompatActivity {
                     public void onSuccess(AuthResult authResult) {
                         Doctor newDoc = new Doctor(uid, name, email, location);
                         AppointmentApp.getDoctorsDB().addDoctor(newDoc);
-                        uploadToFireStore(uid, newDoc);
+//                        uploadToFireStore(uid, newDoc);
+                        newDoc.updateFireStoreWithToast(AppointmentApp.doctorsCollection, uid , newDoc,
+                                RegisterDoctor.this, "Registered successfully",
+                                "Error");
                         progressBar.setVisibility(View.GONE);
                         Intent nextIntent = new Intent(RegisterDoctor.this, DoctorActivity.class);
                         nextIntent.putExtra("uid", uid);
@@ -108,20 +120,20 @@ public class RegisterDoctor extends AppCompatActivity {
                 });
     }
 
-    private void uploadToFireStore(String uid, Doctor newDoc) {
-        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(newDoc)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegisterDoctor.this, "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
+//    private void uploadToFireStore(String uid, Doctor newDoc) {
+//        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(newDoc)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast t = Toast.makeText(RegisterDoctor.this, "Error", Toast.LENGTH_LONG);
+//                    }
+//                });
+//    }
 
 }
