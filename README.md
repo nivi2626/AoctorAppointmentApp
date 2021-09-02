@@ -1,4 +1,5 @@
 DocTor - an appointment system for doctors.
+
 The user can register as a doctor or as a patient, and then log in to the app as the same type of user.
 - As a patient, the user can see a list of doctors, make appointments, cancel appointments and view
 the waiting list for each doctor.
