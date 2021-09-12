@@ -106,7 +106,6 @@ public class RegisterPatient extends AppCompatActivity {
                             newPatient, RegisterPatient.this, "Registered successfully",
                             "Error");
                     // add to local DB
-                    AppointmentApp.getPatientsDB().addPatient(newPatient);
                     progressBar.setVisibility(View.GONE);
                     Intent nextIntent = new Intent(RegisterPatient.this, PatientActivity.class);
                     nextIntent.putExtra("uid", uid);

@@ -10,7 +10,6 @@ import com.google.firebase.FirebaseApp;
 public class AppointmentApp extends Application {
     private static AppointmentApp appInstance=null;
     private static DoctorsDB doctorsDB;
-    private static PatientsDB patientsDB;
     final static String doctorsCollection = "doctors";
     final static String patientsCollection = "patients";
 
@@ -20,7 +19,6 @@ public class AppointmentApp extends Application {
         super.onCreate();
         appInstance = this;
         doctorsDB = new DoctorsDB();
-        patientsDB = new PatientsDB();
         FirebaseApp.initializeApp(this);
     }
 
@@ -33,8 +31,4 @@ public class AppointmentApp extends Application {
         return doctorsDB;
     }
 
-    public static PatientsDB getPatientsDB() {
-        return patientsDB;
-
-    }
 }

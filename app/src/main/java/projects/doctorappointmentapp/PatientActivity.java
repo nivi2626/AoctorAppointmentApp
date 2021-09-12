@@ -4,10 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -16,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class PatientActivity extends AppCompatActivity {
     private DoctorsListAdapter adapter = null;
     private DoctorsDB doctorsDB = null;
-    private PatientsDB PatentsDB = null;
     Patient patient;
     RecyclerView recView;
     Switch filter;
@@ -26,13 +34,19 @@ public class PatientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_activity);
 
-        // get Data bases
+        // find patient
+        String uid = getIntent().getStringExtra("uid");
+        setPatient(uid);
+//        patient = PatientsDB.getByUid(uid);
+
+
+        // get Data base
         if (doctorsDB == null) {
             doctorsDB = AppointmentApp.getDoctorsDB();
         }
-        if (PatentsDB == null) {
-            PatentsDB = AppointmentApp.getPatientsDB();
-        }
+//        if (PatentsDB == null) {
+//            PatentsDB = AppointmentApp.getPatientsDB();
+//        }
 
         // find all the views
         filter = (Switch) findViewById(R.id.filter);
@@ -41,15 +55,6 @@ public class PatientActivity extends AppCompatActivity {
         // set initial UI:
         filter.setChecked(false);
 
-        // find patient
-        String uid = getIntent().getStringExtra("uid");
-        patient = PatientsDB.getByUid(uid);
-
-        // recycleView
-        recView.setLayoutManager(new LinearLayoutManager(PatientActivity.this, RecyclerView.VERTICAL, false));
-        adapter = new DoctorsListAdapter(patient);
-        recView.setAdapter(adapter);
-
 
         // filter listener
         filter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -57,8 +62,7 @@ public class PatientActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     adapter.showFiltered();
-                }
-                else {
+                } else {
                     adapter.showAll();
                 }
             }
@@ -73,5 +77,34 @@ public class PatientActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent backIntent = new Intent(PatientActivity.this, MainActivity.class);
         startActivity(backIntent);
+    }
+
+    /**
+     * get the current user (patient) object
+     *
+     * @param uid - patient user id
+     */
+    private void setPatient(String uid) {
+        FirebaseFirestore.getInstance().collection(AppointmentApp.patientsCollection).document(uid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                patient = document.toObject(Patient.class);
+
+                                // set the doctors
+                                recView.setLayoutManager(new LinearLayoutManager(PatientActivity.this, RecyclerView.VERTICAL, false));
+                                adapter = new DoctorsListAdapter(patient);
+                                recView.setAdapter(adapter);
+                            }
+                        }
+                        else
+                            {
+                                Toast.makeText(PatientActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 }
