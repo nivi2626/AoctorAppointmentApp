@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -47,8 +48,7 @@ public class RegisterPatient extends AppCompatActivity {
 
         // set register listener
         registerButton.setOnClickListener(v -> {
-            Boolean flag = checkDetails();
-            if (flag) {
+            if (checkDetails()) {
                 registerPatient();
             }
         });
@@ -88,33 +88,36 @@ public class RegisterPatient extends AppCompatActivity {
     }
 
     /**
-     * saves patient as user and saves it's object to fireStore
+     * saves patient as user and saves it's object to fireStore "patients" collection
      */
     private void registerPatient() {
+        // create new patient
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
         int age = Integer.parseInt(this.age_edit.getText().toString());
         String gender = AppointmentApp.MALE; //todo - get from UI
         String password = this.password_edit.getText().toString();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Patient newPatient = new Patient(uid, name, email, age, gender);
 
         progressBar.setVisibility(View.VISIBLE);
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(RegisterPatient.this, authResult -> {
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Patient newPatient = new Patient(uid, name, email, age, gender);
                     // add to fireStore
-                    newPatient.updateFireStoreWithToast(AppointmentApp.patientsCollection, uid,
+                    newPatient.updateUserInFireStore(AppointmentApp.patientsCollection, uid,
                             newPatient, RegisterPatient.this, "Registered successfully",
                             "Error");
-                    // add to local DB
+
                     progressBar.setVisibility(View.GONE);
+
                     Intent nextIntent = new Intent(RegisterPatient.this, PatientActivity.class);
                     nextIntent.putExtra("uid", uid);
                     startActivity(nextIntent);
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(RegisterPatient.this, "Registration failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterPatient.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Patient extends User{
     public int age;
-    private List<Doctor> appointments;
+    public List<Doctor> appointments;
     public String medical_history;
 
     Patient(String uid, String name, String email, int age, String gender){
@@ -37,7 +37,7 @@ public class Patient extends User{
      */
     public void addToAppointments(Doctor doctor) {
         appointments.add(doctor);
-        updateFireStore(AppointmentApp.patientsCollection, uid, this);
+        updateUserInFireStore(AppointmentApp.patientsCollection, uid, this);
     }
 
     /**
@@ -45,7 +45,7 @@ public class Patient extends User{
      */
     public void removeFromAppointments(Doctor doctor){
         appointments.remove(doctor);
-        updateFireStore(AppointmentApp.patientsCollection, uid, this);
+        updateUserInFireStore(AppointmentApp.patientsCollection, uid, this);
     }
 
     public void sendNotification() {

@@ -1,6 +1,5 @@
 package projects.doctorappointmentapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -55,8 +54,7 @@ public class RegisterDoctor extends AppCompatActivity {
 
         // set listener
         registerButton.setOnClickListener(v -> {
-            Boolean flag = checkDetails();
-            if (flag) {
+            if (checkDetails()) {
                 registerDoctor();
             }
         });
@@ -85,27 +83,31 @@ public class RegisterDoctor extends AppCompatActivity {
     }
 
     /**
-     * saves doctor as user and saves the doctor-object to fireStore
+     * saves doctor as user and saves it's object to fireStore "doctors" collection
      */
     private void registerDoctor() {
+        // create new doctor
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
         String location = this.location_edit.getText().toString();
-        String password = this.password_edit.getText().toString();
         String gender = AppointmentApp.MALE; //todo - get from UI
+        String password = this.password_edit.getText().toString();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Doctor newDoc = new Doctor(uid, name, email, location, gender);
 
         progressBar.setVisibility(View.VISIBLE);
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(RegisterDoctor.this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Doctor newDoc = new Doctor(uid, name, email, location, gender);
                         AppointmentApp.getDoctorsDB().addDoctor(newDoc);
-                        newDoc.updateFireStoreWithToast(AppointmentApp.doctorsCollection, uid , newDoc,
+                        newDoc.updateUserInFireStore(AppointmentApp.doctorsCollection, uid , newDoc,
                                 RegisterDoctor.this, "Registered successfully",
                                 "Error");
+
                         progressBar.setVisibility(View.GONE);
+
                         Intent nextIntent = new Intent(RegisterDoctor.this, DoctorActivity.class);
                         nextIntent.putExtra("uid", uid);
                         startActivity(nextIntent);
@@ -115,7 +117,7 @@ public class RegisterDoctor extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(RegisterDoctor.this, "Registration failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterDoctor.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

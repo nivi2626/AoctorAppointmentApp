@@ -21,15 +21,15 @@ public abstract class User {
     /**
      * updates user in fireStore
      */
-    protected void updateFireStore(String collection, String uid , User user){
+    protected void updateUserInFireStore(String collection, String uid , User user){
         FirebaseFirestore fireStore= FirebaseFirestore.getInstance();;
         fireStore.collection(collection).document(uid).set(user);
     }
 
     /**
-     * updates user in fireStore and show success/failure message
+     * updates user in fireStore and shows success/failure message
      */
-    protected void updateFireStoreWithToast(String collection, String uid , User user, Context context, String successMsg, String failureMsg){
+    protected void updateUserInFireStore(String collection, String uid , User user, Context context, String successMsg, String failureMsg){
         FirebaseFirestore fireStore= FirebaseFirestore.getInstance();;
         fireStore.collection(collection).document(uid).set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -44,5 +44,9 @@ public abstract class User {
                         Toast.makeText(context, failureMsg, Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    protected void register(){
+
     }
 }

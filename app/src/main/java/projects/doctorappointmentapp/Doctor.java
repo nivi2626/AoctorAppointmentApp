@@ -1,8 +1,4 @@
 package projects.doctorappointmentapp;
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +50,7 @@ public class Doctor extends User{
      */
     public void addToWaitingList(Patient patient){
         waiting_list.add(patient);
-        updateFireStore(AppointmentApp.doctorsCollection, uid, this);
+        updateUserInFireStore(AppointmentApp.doctorsCollection, uid, this);
     }
 
     /***
@@ -63,7 +59,7 @@ public class Doctor extends User{
      */
     public void removeFromWaitingList(Patient patient) {
         waiting_list.remove(patient);
-        updateFireStore(AppointmentApp.doctorsCollection, uid, this);
+        updateUserInFireStore(AppointmentApp.doctorsCollection, uid, this);
     }
 
 
