@@ -11,9 +11,10 @@ public class Patient extends User{
     private List<Doctor> appointments;
     public String medical_history;
 
-    Patient(String uid, String name, String email, int age){
+    Patient(String uid, String name, String email, int age, String gender){
         this.uid = uid;
         this.name = name;
+        this.gender = gender;
         this.email = email;
         this.age = age;
         this.medical_history = "";
@@ -22,6 +23,7 @@ public class Patient extends User{
 
     Patient(){
         this.uid = "";
+        this.gender = AppointmentApp.MALE;
         this.name = "";
         this.email = "";
         this.age = 0;

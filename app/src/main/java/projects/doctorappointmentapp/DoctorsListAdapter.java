@@ -80,15 +80,11 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
         holder.appointmentButton.setOnClickListener(v->
         {
             patient.addToAppointments(doctor);
-            if (doctor.getCurrentPatient() == null) {
-                doctor.setCurrentPatient(patient);
-            }
-            else {
-                doctor.addToWaitingList(patient);
-            }
+            doctor.addToWaitingList(patient);
             holder.appointmentButton.setAlpha(0.5f);
             holder.appointmentButton.setClickable(false);
             holder.cancelButton.setVisibility(View.VISIBLE);
+            notifyDataSetChanged();
         });
 
         // cancel appointment listener
@@ -101,6 +97,7 @@ public class DoctorsListAdapter extends RecyclerView.Adapter<DoctorHolder> {
             holder.appointmentButton.setAlpha(1f);
             holder.appointmentButton.setClickable(true);
             holder.cancelButton.setVisibility(View.INVISIBLE);
+            notifyDataSetChanged();
         });
 
         // show popUp with the waiting list

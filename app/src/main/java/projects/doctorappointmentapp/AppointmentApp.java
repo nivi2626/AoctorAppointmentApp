@@ -10,9 +10,11 @@ import com.google.firebase.FirebaseApp;
 public class AppointmentApp extends Application {
     private static AppointmentApp appInstance=null;
     private static DoctorsDB doctorsDB;
+    // constants
     final static String doctorsCollection = "doctors";
     final static String patientsCollection = "patients";
-
+    final static String MALE = "Male";
+    final static String FEMALE = "Female";
 
     @Override
     public void onCreate() {
@@ -22,8 +24,7 @@ public class AppointmentApp extends Application {
         FirebaseApp.initializeApp(this);
     }
 
-    public static AppointmentApp getAppInstance()
-    {
+    public static AppointmentApp getAppInstance() {
         return appInstance;
     }
 

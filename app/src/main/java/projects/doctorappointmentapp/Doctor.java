@@ -12,24 +12,24 @@ import java.util.List;
  */
 public class Doctor extends User{
     public String location;
-    private Patient currentPatient;
     public List<Patient> waiting_list;
 
 
-    Doctor(String uid, String name, String email, String location){
+    Doctor(String uid, String name, String email, String location, String gender){
         this.uid = uid;
         this.name = name;
+        this.gender = gender;
         this.email = email;
         this.location = location;
-        this.currentPatient = null;
         this.waiting_list = new ArrayList<Patient>();
     }
 
     Doctor(){
+        this.uid = "";
         this.name = "Dr ...";
+        this.gender = AppointmentApp.MALE;
         this.email = "";
         this.location = "location";
-        this.currentPatient = null;
         this.waiting_list = new ArrayList<Patient>();
     }
 
@@ -38,7 +38,8 @@ public class Doctor extends User{
      */
     public String getWaitingListParsed() {
         StringBuilder result = new StringBuilder();
-        for (Patient p:this.waiting_list) {
+        for (int j=1; j<this.waiting_list.size(); j++) {
+            Patient p = this.waiting_list.get(j);
             if (!result.toString().equals("")) {
                 result.append("\n");
             }
@@ -65,21 +66,14 @@ public class Doctor extends User{
         updateFireStore(AppointmentApp.doctorsCollection, uid, this);
     }
 
-    /***
-     * sets the doctors current patient
-     * @param patient - current patient
-     */
-    public void setCurrentPatient(Patient patient) {
-        currentPatient = patient;
-        if (currentPatient != null) {
-            updateFireStore(AppointmentApp.doctorsCollection, uid, this);
-        }
-    }
 
     /**
      * returns current patient
      */
     public Patient getCurrentPatient() {
-        return currentPatient;
+        if (waiting_list.size() > 1) {
+            return waiting_list.get(0);
+        }
+        return null;
     }
 }

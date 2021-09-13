@@ -38,16 +38,16 @@ public class DoctorActivity extends AppCompatActivity {
         next_patient_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (doctor.waiting_list.size() > 0) {
-                    Patient next = doctor.waiting_list.get(0); // find next patient
-                    next.sendNotification();
-                    next.removeFromAppointments(doctor);
-                    doctor.setCurrentPatient(next);
+                if (doctor.waiting_list.size() > 1) {
+                    // end appointment for current patient
+                    Patient current = doctor.waiting_list.get(0);
+                    current.removeFromAppointments(doctor);
                     doctor.waiting_list.remove(0);
-                } else {
-                    doctor.setCurrentPatient(null);
+                    // set next patient
+                    Patient next = doctor.waiting_list.get(0);
+                    next.sendNotification();
+                    setUI();
                 }
-                setUI();
             }
         });
     }
@@ -56,10 +56,12 @@ public class DoctorActivity extends AppCompatActivity {
      * sets the UI according to the doctor fields
      */
     private void setUI() {
-        if (doctor.getCurrentPatient() == null) {
+        Patient current = doctor.getCurrentPatient();
+        if ( current == null) {
             currentPatient.setText("");
-        } else {
-            currentPatient.setText(doctor.getCurrentPatient().name);
+        }
+        else {
+            currentPatient.setText(current.name);
         }
         next_patients_names.setText(doctor.getWaitingListParsed());
     }

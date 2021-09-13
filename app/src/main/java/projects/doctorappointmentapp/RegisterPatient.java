@@ -94,13 +94,14 @@ public class RegisterPatient extends AppCompatActivity {
         String name = this.name_edit.getText().toString();
         String email = this.email_edit.getText().toString();
         int age = Integer.parseInt(this.age_edit.getText().toString());
+        String gender = AppointmentApp.MALE; //todo - get from UI
         String password = this.password_edit.getText().toString();
 
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(RegisterPatient.this, authResult -> {
                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Patient newPatient = new Patient(uid, name, email, age);
+                    Patient newPatient = new Patient(uid, name, email, age, gender);
                     // add to fireStore
                     newPatient.updateFireStoreWithToast(AppointmentApp.patientsCollection, uid,
                             newPatient, RegisterPatient.this, "Registered successfully",

@@ -92,6 +92,7 @@ public class RegisterDoctor extends AppCompatActivity {
         String email = this.email_edit.getText().toString();
         String location = this.location_edit.getText().toString();
         String password = this.password_edit.getText().toString();
+        String gender = AppointmentApp.MALE; //todo - get from UI
 
         progressBar.setVisibility(View.VISIBLE);
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -99,9 +100,8 @@ public class RegisterDoctor extends AppCompatActivity {
                 .addOnSuccessListener(RegisterDoctor.this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Doctor newDoc = new Doctor(uid, name, email, location);
+                        Doctor newDoc = new Doctor(uid, name, email, location, gender);
                         AppointmentApp.getDoctorsDB().addDoctor(newDoc);
-//                        uploadToFireStore(uid, newDoc);
                         newDoc.updateFireStoreWithToast(AppointmentApp.doctorsCollection, uid , newDoc,
                                 RegisterDoctor.this, "Registered successfully",
                                 "Error");
@@ -119,21 +119,5 @@ public class RegisterDoctor extends AppCompatActivity {
                     }
                 });
     }
-
-//    private void uploadToFireStore(String uid, Doctor newDoc) {
-//        fireStore.collection(AppointmentApp.doctorsCollection).document(uid).set(newDoc)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(RegisterDoctor.this, "Registered successfully", Toast.LENGTH_LONG).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast t = Toast.makeText(RegisterDoctor.this, "Error", Toast.LENGTH_LONG);
-//                    }
-//                });
-//    }
 
 }

@@ -16,7 +16,7 @@ public abstract class User {
     public String uid;
     public String name;
     public String email;
-    private FirebaseFirestore fireStore;
+    public String gender;
 
     /**
      * updates user in fireStore
@@ -27,7 +27,7 @@ public abstract class User {
     }
 
     /**
-     * updates user in fireStore and prefo
+     * updates user in fireStore and show success/failure message
      */
     protected void updateFireStoreWithToast(String collection, String uid , User user, Context context, String successMsg, String failureMsg){
         FirebaseFirestore fireStore= FirebaseFirestore.getInstance();;
